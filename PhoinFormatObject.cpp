@@ -2,6 +2,7 @@
 #include <QString>
 #include <regex>
 #include "stdlib.h"
+#include <sstream>
 PhoinFormatObject::PhoinFormatObject(std::string lineId):line(lineId){}
 
 PhoinFormatObject::PhoinFormatObject()
@@ -70,7 +71,7 @@ bool PhoinFormatObject::getValueBool(std::string tag, bool &result)
     return state;
 }
 
-bool PhoinFormatObject::setValueInt(std::string tag, int value)
+bool PhoinFormatObject::addAttributInt(std::string tag, int value)
 {
     if (line.find(tag) == std::string::npos)
     {
@@ -80,6 +81,96 @@ bool PhoinFormatObject::setValueInt(std::string tag, int value)
     }
     log.push_back("tag "+tag+" exist");
     return false;
+}
+
+bool PhoinFormatObject::addAttributDouble(std::string tag, double value)
+{
+    if (line.find(tag) == std::string::npos)
+    {
+        std::ostringstream stream;
+        stream << value;
+        std::string attribut = tag+"="+stream.str()+";";
+        setValue(attribut);
+        return true;
+    }
+    log.push_back("tag "+tag+" exist");
+    return false;
+}
+
+bool PhoinFormatObject::addAttributBool(std::string tag, bool value)
+{
+    if (line.find(tag) == std::string::npos)
+    {
+        std::string attribut = tag+"="+std::to_string(value)+";";
+        setValue(attribut);
+        return true;
+    }
+    log.push_back("tag "+tag+" exist");
+    return false;
+}
+
+bool PhoinFormatObject::addAttributTime(std::string tag, PTime value)
+{
+    if (line.find(tag) == std::string::npos)
+    {
+        std::string attribut = tag+"="+value.getData()+";";
+        setValue(attribut);
+        return true;
+    }
+    log.push_back("tag "+tag+" exist");
+    return false;
+}
+
+bool PhoinFormatObject::addAttributDate(std::string tag, PDate value)
+{
+    if (line.find(tag) == std::string::npos)
+    {
+        std::string attribut = tag+"="+value.getData()+";";
+        setValue(attribut);
+        return true;
+    }
+    log.push_back("tag "+tag+" exist");
+    return false;
+}
+
+bool PhoinFormatObject::addAttributStr(std::string tag, std::string value)
+{
+    if (line.find(tag) == std::string::npos)
+    {
+        std::string attribut = tag+"="+value+";";
+        setValue(attribut);
+        return true;
+    }
+    log.push_back("tag "+tag+" exist");
+    return false;
+}
+
+std::set<std::string> PhoinFormatObject::getTags()
+{
+    std::set<std::string> listTags{};
+    size_t pos = 0;
+    std::string temp = line;
+    while((pos = temp.find('=')) != std::string::npos)
+    {
+        std::string tag = temp.substr(0,pos);
+        temp.erase(0,temp.find(';')+1);
+        listTags.insert(tag);
+    }
+    return listTags;
+}
+
+std::string PhoinFormatObject::getTagByNO(int num)
+{
+    auto tags = getTags();
+    int i = 0;
+    for (auto it = tags.begin();it != tags.end();++it)
+    {
+        if (i == num)
+            return *it;
+        i++;
+    }
+    return "";
+
 }
 
 bool PhoinFormatObject::isEmpty()
