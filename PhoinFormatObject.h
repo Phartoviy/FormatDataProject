@@ -10,6 +10,7 @@ class PhoinFormatObject
     std::string nameID{""};
     std::string line{""};
     std::vector<std::string> log{};
+    std::vector<PhoinFormatObject> innerLists{};
 public:
     PhoinFormatObject();
     std::string getName();
@@ -20,6 +21,7 @@ public:
     bool getValueTime(std::string tag,PTime &result);
     bool getValueDate(std::string tag,PDate &result);
     bool getValueBool(std::string tag, bool &result);
+    PhoinFormatObject getFormatList(std::string tag);
 
     bool addAttributInt(std::string tag, int value);
     bool addAttributDouble(std::string tag, double value);
@@ -34,9 +36,15 @@ public:
     bool isEmpty();
     int countAttrib();
     std::vector<std::string> getlog();
+    std::string getRecentLog();
+
+    void setData(std::string l);
+    void addInnerList(std::string lineAttribut);
 private:
     std::string getValue(std::string tag,bool &s);
     bool setValue(std::string attribut);
+    PhoinFormatObject getListByNumber(int number);
+
 };
 
 #endif // PHOINFORMATOBJECT_H

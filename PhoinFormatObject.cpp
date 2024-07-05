@@ -71,6 +71,22 @@ bool PhoinFormatObject::getValueBool(std::string tag, bool &result)
     return state;
 }
 
+PhoinFormatObject PhoinFormatObject::getFormatList(std::string tag)
+{
+    std::regex pattern(tag+"=\\{([^\\{\\}]*)\\}");
+    std::smatch match;
+    if (std::regex_search(line,match,pattern))
+    {
+        if (match[1].matched)
+        {
+            auto n = std::stoi(match[1]);
+            return getListByNumber(n);
+        }
+    }
+    log.push_back("tag: "+tag+" is not find");
+    return PhoinFormatObject();
+}
+
 bool PhoinFormatObject::addAttributInt(std::string tag, int value)
 {
     if (line.find(tag) == std::string::npos)
@@ -194,6 +210,16 @@ std::vector<std::string> PhoinFormatObject::getlog()
     return log;
 }
 
+std::string PhoinFormatObject::getRecentLog()
+{
+    return log.back();
+}
+
+void PhoinFormatObject::setData(std::string l)
+{
+    line = l;
+}
+
 std::string PhoinFormatObject::getValue(std::string tag,bool &s)
 {
     std::regex pattern(tag+"=([^;]+)");
@@ -215,4 +241,20 @@ bool PhoinFormatObject::setValue(std::string attribut)
 {
     line += attribut;
     return true;
+}
+
+PhoinFormatObject PhoinFormatObject::getListByNumber(int number)
+{
+    if (innerLists.size() > number)
+    {
+        return innerLists[number];
+    }
+    log.push_back("list number "+std::to_string(number)+" is not find");
+    return PhoinFormatObject();
+}
+
+void PhoinFormatObject::addInnerList(std::string lineAttribut)
+{
+    if (!lineAttribut.empty())
+        innerLists.push_back(PhoinFormatObject(lineAttribut));
 }
