@@ -7,11 +7,11 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    PhoinFormatObject obj("tag={0};tag2=12:30:00;");
-    obj.addInnerList("tag34=5;tag54=0;");
-    auto b = obj.getFormatList("tag");
-
-
+    PhoinFormatObject obj("tag2=12:30:00;tag34=5;tag54=0;");
+    obj.addInnerList("tag340=5;tag540=0;","tag");
+    auto flag = obj.getFormatList("tag");
+    obj.addAttributBool("tag55",false);
+    auto delFlag = obj.deleteAttribut("tag");
 
 
 

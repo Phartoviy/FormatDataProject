@@ -73,18 +73,11 @@ bool PhoinFormatObject::getValueBool(std::string tag, bool &result)
 
 PhoinFormatObject PhoinFormatObject::getFormatList(std::string tag)
 {
-    std::regex pattern(tag+"=\\{([^\\{\\}]*)\\}");
-    std::smatch match;
-    if (std::regex_search(line,match,pattern))
-    {
-        if (match[1].matched)
-        {
-            auto n = std::stoi(match[1]);
-            return getListByNumber(n);
-        }
-    }
-    log.push_back("tag: "+tag+" is not find");
-    return PhoinFormatObject();
+    int number = getNumberByTagList(tag);
+    if (number != -1)
+        return getListByNumber(number);
+    else
+        return PhoinFormatObject();
 }
 
 bool PhoinFormatObject::addAttributInt(std::string tag, int value)
@@ -95,7 +88,7 @@ bool PhoinFormatObject::addAttributInt(std::string tag, int value)
         setValue(attribut);
         return true;
     }
-    log.push_back("tag "+tag+" exist");
+    log.push_back("Тег "+tag+" уже существует");
     return false;
 }
 
@@ -109,7 +102,7 @@ bool PhoinFormatObject::addAttributDouble(std::string tag, double value)
         setValue(attribut);
         return true;
     }
-    log.push_back("tag "+tag+" exist");
+    log.push_back("Тег "+tag+" уже существует");
     return false;
 }
 
@@ -121,7 +114,7 @@ bool PhoinFormatObject::addAttributBool(std::string tag, bool value)
         setValue(attribut);
         return true;
     }
-    log.push_back("tag "+tag+" exist");
+    log.push_back("Тег "+tag+" уже существует");
     return false;
 }
 
@@ -133,7 +126,7 @@ bool PhoinFormatObject::addAttributTime(std::string tag, PTime value)
         setValue(attribut);
         return true;
     }
-    log.push_back("tag "+tag+" exist");
+    log.push_back("Тег "+tag+" уже существует");
     return false;
 }
 
@@ -145,7 +138,7 @@ bool PhoinFormatObject::addAttributDate(std::string tag, PDate value)
         setValue(attribut);
         return true;
     }
-    log.push_back("tag "+tag+" exist");
+    log.push_back("Тег "+tag+" уже существует");
     return false;
 }
 
@@ -157,7 +150,7 @@ bool PhoinFormatObject::addAttributStr(std::string tag, std::string value)
         setValue(attribut);
         return true;
     }
-    log.push_back("tag "+tag+" exist");
+    log.push_back("Тег "+tag+" уже существует");
     return false;
 }
 
@@ -233,7 +226,7 @@ std::string PhoinFormatObject::getValue(std::string tag,bool &s)
         }
     }
     s = false;
-    log.push_back("tag: "+tag+" is not find");
+    log.push_back("Тег: "+tag+" не найден");
     return "";
 }
 
@@ -249,12 +242,57 @@ PhoinFormatObject PhoinFormatObject::getListByNumber(int number)
     {
         return innerLists[number];
     }
-    log.push_back("list number "+std::to_string(number)+" is not find");
+    log.push_back("Лист номер "+std::to_string(number)+" не найден");
     return PhoinFormatObject();
 }
 
-void PhoinFormatObject::addInnerList(std::string lineAttribut)
+int PhoinFormatObject::getNumberByTagList(std::string tag)
+{
+    std::regex pattern(tag+"=\\{([^\\{\\}]*)\\}");
+    std::smatch match;
+    if (std::regex_search(line,match,pattern))
+    {
+        if (match[1].matched)
+        {
+            auto n = std::stoi(match[1]);
+            return n;
+        }
+    }
+    log.push_back("Тег: "+tag+" не найден");
+    return -1;
+}
+
+void PhoinFormatObject::addInnerList(std::string lineAttribut, std::string tag)
 {
     if (!lineAttribut.empty())
+    {
+        int sizeCurrent = innerLists.size();
+        line += tag+"="+"{"+std::to_string(sizeCurrent)+"};";
         innerLists.push_back(PhoinFormatObject(lineAttribut));
+    }
+    else
+    {
+        log.push_back("Данные списка пустые");
+    }
+}
+
+bool PhoinFormatObject::deleteAttribut(std::string tag)
+{
+    size_t startPos = line.find(tag+"=");
+    if (startPos != std::string::npos)
+    {
+        size_t endPos = line.find(";",startPos);
+        if (endPos != std::string::npos)
+        {
+            std::string tempStr = line.substr(startPos,endPos-startPos+1);
+            if (tempStr.find("{")!= std::string::npos)
+            {
+                innerLists.erase(innerLists.begin()+getNumberByTagList(tag));
+            }
+            line.erase(startPos,endPos-startPos+1);
+        }
+        return true;
+    }
+    log.push_back("тег "+tag+" не найден");
+    return false;
 }
