@@ -5,16 +5,18 @@
 #include <sstream>
 PhoinFormatObject::PhoinFormatObject(std::string lineId):line(lineId){}
 
+//========================================================================
+
 PhoinFormatObject::PhoinFormatObject()
 {
     nameID = "Default name";
 }
-
+//========================================================================
 std::string PhoinFormatObject::getName()
 {
     return nameID;
 }
-
+//========================================================================
 bool PhoinFormatObject::getValueInt(std::string tag,int &result)
 {
     bool state = true;
@@ -22,14 +24,14 @@ bool PhoinFormatObject::getValueInt(std::string tag,int &result)
     (state)?result = std::stoi(val):result = 0;
     return state;
 }
-
+//========================================================================
 bool PhoinFormatObject::getValueStr(std::string tag,std::string &result)
 {
     bool state = true;
     result = getValue(tag,state);
     return state;
 }
-
+//========================================================================
 bool PhoinFormatObject::getValueDouble(std::string tag,double &result)
 {
     bool state = true;
@@ -37,7 +39,7 @@ bool PhoinFormatObject::getValueDouble(std::string tag,double &result)
     result = (state)?std::stod(val.c_str()):0;
     return state;
 }
-
+//========================================================================
 bool PhoinFormatObject::getValueTime(std::string tag,PTime &result)
 {
     bool state = true;
@@ -48,7 +50,7 @@ bool PhoinFormatObject::getValueTime(std::string tag,PTime &result)
         result = PTime();
     return state;
 }
-
+//========================================================================
 bool PhoinFormatObject::getValueDate(std::string tag, PDate &result)
 {
     bool state = true;
@@ -59,7 +61,7 @@ bool PhoinFormatObject::getValueDate(std::string tag, PDate &result)
         result = PDate("1900-09-09");
     return state;
 }
-
+//========================================================================
 bool PhoinFormatObject::getValueBool(std::string tag, bool &result)
 {
     bool state = true;
@@ -70,7 +72,7 @@ bool PhoinFormatObject::getValueBool(std::string tag, bool &result)
         result = false;
     return state;
 }
-
+//========================================================================
 PhoinFormatObject PhoinFormatObject::getFormatList(std::string tag)
 {
     int number = getNumberByTagList(tag);
@@ -79,7 +81,7 @@ PhoinFormatObject PhoinFormatObject::getFormatList(std::string tag)
     else
         return PhoinFormatObject();
 }
-
+//========================================================================
 bool PhoinFormatObject::addAttributInt(std::string tag, int value)
 {
     if (line.find(tag) == std::string::npos)
@@ -91,7 +93,7 @@ bool PhoinFormatObject::addAttributInt(std::string tag, int value)
     log.push_back("Тег "+tag+" уже существует");
     return false;
 }
-
+//========================================================================
 bool PhoinFormatObject::addAttributDouble(std::string tag, double value)
 {
     if (line.find(tag) == std::string::npos)
@@ -105,7 +107,7 @@ bool PhoinFormatObject::addAttributDouble(std::string tag, double value)
     log.push_back("Тег "+tag+" уже существует");
     return false;
 }
-
+//========================================================================
 bool PhoinFormatObject::addAttributBool(std::string tag, bool value)
 {
     if (line.find(tag) == std::string::npos)
@@ -117,7 +119,7 @@ bool PhoinFormatObject::addAttributBool(std::string tag, bool value)
     log.push_back("Тег "+tag+" уже существует");
     return false;
 }
-
+//========================================================================
 bool PhoinFormatObject::addAttributTime(std::string tag, PTime value)
 {
     if (line.find(tag) == std::string::npos)
@@ -129,7 +131,7 @@ bool PhoinFormatObject::addAttributTime(std::string tag, PTime value)
     log.push_back("Тег "+tag+" уже существует");
     return false;
 }
-
+//========================================================================
 bool PhoinFormatObject::addAttributDate(std::string tag, PDate value)
 {
     if (line.find(tag) == std::string::npos)
@@ -141,7 +143,7 @@ bool PhoinFormatObject::addAttributDate(std::string tag, PDate value)
     log.push_back("Тег "+tag+" уже существует");
     return false;
 }
-
+//========================================================================
 bool PhoinFormatObject::addAttributStr(std::string tag, std::string value)
 {
     if (line.find(tag) == std::string::npos)
@@ -153,7 +155,40 @@ bool PhoinFormatObject::addAttributStr(std::string tag, std::string value)
     log.push_back("Тег "+tag+" уже существует");
     return false;
 }
-
+//========================================================================
+bool PhoinFormatObject::updateAttributStr(std::string tag, std::string value)
+{
+    return (replaceValue(tag,value) == true)?1:0;
+}
+//========================================================================
+bool PhoinFormatObject::updateAttributInt(std::string tag, int value)
+{
+    return (replaceValue(tag,std::to_string(value)) == true)?1:0;
+}
+//========================================================================
+bool PhoinFormatObject::updateAttributDouble(std::string tag, double value)
+{
+    std::ostringstream stream;
+    stream << value;
+    return (replaceValue(tag,stream.str()) == true)?1:0;
+}
+//========================================================================
+bool PhoinFormatObject::updateAttributBool(std::string tag, bool value)
+{
+    std::string v = (value)?"1":"0";
+    return (replaceValue(tag,v) == true)?1:0;
+}
+//========================================================================
+bool PhoinFormatObject::updateAttributTime(std::string tag, PTime value)
+{
+    return (replaceValue(tag,value.getData()) == true)?1:0;
+}
+//========================================================================
+bool PhoinFormatObject::updateAttributDate(std::string tag, PDate value)
+{
+    return (replaceValue(tag,value.getData()) == true)?1:0;
+}
+//========================================================================
 std::set<std::string> PhoinFormatObject::getTags()
 {
     std::set<std::string> listTags{};
@@ -167,7 +202,7 @@ std::set<std::string> PhoinFormatObject::getTags()
     }
     return listTags;
 }
-
+//========================================================================
 std::string PhoinFormatObject::getTagByNO(int num)
 {
     auto tags = getTags();
@@ -181,12 +216,12 @@ std::string PhoinFormatObject::getTagByNO(int num)
     return "";
 
 }
-
+//========================================================================
 bool PhoinFormatObject::isEmpty()
 {
     return line.empty();
 }
-
+//========================================================================
 int PhoinFormatObject::countAttrib()
 {
     int c = 0;
@@ -197,22 +232,22 @@ int PhoinFormatObject::countAttrib()
     }
     return c;
 }
-
+//========================================================================
 std::vector<std::string> PhoinFormatObject::getlog()
 {
     return log;
 }
-
+//========================================================================
 std::string PhoinFormatObject::getRecentLog()
 {
     return log.back();
 }
-
+//========================================================================
 void PhoinFormatObject::setData(std::string l)
 {
     line = l;
 }
-
+//========================================================================
 std::string PhoinFormatObject::getValue(std::string tag,bool &s)
 {
     std::regex pattern(tag+"=([^;]+)");
@@ -229,13 +264,25 @@ std::string PhoinFormatObject::getValue(std::string tag,bool &s)
     log.push_back("Тег: "+tag+" не найден");
     return "";
 }
-
+//========================================================================
 bool PhoinFormatObject::setValue(std::string attribut)
 {
     line += attribut;
     return true;
 }
-
+//========================================================================
+bool PhoinFormatObject::replaceValue(std::string tag, std::string val)
+{
+    size_t startAttr = line.find(tag+"=");
+    if (startAttr == std::string::npos)
+        return false;
+    size_t endAttr = line.find(";",startAttr);
+    if (endAttr == std::string::npos)
+        return false;
+    line.replace(startAttr,endAttr-startAttr,tag+"="+val);
+    return true;
+}
+//========================================================================
 PhoinFormatObject PhoinFormatObject::getListByNumber(int number)
 {
     if (innerLists.size() > number)
@@ -245,7 +292,7 @@ PhoinFormatObject PhoinFormatObject::getListByNumber(int number)
     log.push_back("Лист номер "+std::to_string(number)+" не найден");
     return PhoinFormatObject();
 }
-
+//========================================================================
 int PhoinFormatObject::getNumberByTagList(std::string tag)
 {
     std::regex pattern(tag+"=\\{([^\\{\\}]*)\\}");
@@ -261,7 +308,7 @@ int PhoinFormatObject::getNumberByTagList(std::string tag)
     log.push_back("Тег: "+tag+" не найден");
     return -1;
 }
-
+//========================================================================
 void PhoinFormatObject::addInnerList(std::string lineAttribut, std::string tag)
 {
     if (!lineAttribut.empty())
@@ -275,7 +322,7 @@ void PhoinFormatObject::addInnerList(std::string lineAttribut, std::string tag)
         log.push_back("Данные списка пустые");
     }
 }
-
+//========================================================================
 bool PhoinFormatObject::deleteAttribut(std::string tag)
 {
     size_t startPos = line.find(tag+"=");
@@ -296,3 +343,4 @@ bool PhoinFormatObject::deleteAttribut(std::string tag)
     log.push_back("тег "+tag+" не найден");
     return false;
 }
+//========================================================================

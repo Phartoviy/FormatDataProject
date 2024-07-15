@@ -118,6 +118,48 @@ public:
      */
     bool addAttributStr(std::string tag, std::string value);
     /**
+     * @brief Обновление атрибута по его тегу
+     * @param tag - тег
+     * @param value - новое значение
+     * @return Выполнено(true)/Невыполнено(false)
+     */
+    bool updateAttributStr(std::string tag, std::string value);
+    /**
+     * @brief Обновление атрибута по его тегу
+     * @param tag - тег
+     * @param value - новое значение
+     * @return Выполнено(true)/Невыполнено(false)
+     */
+    bool updateAttributInt(std::string tag, int value);
+    /**
+     * @brief Обновление атрибута по его тегу
+     * @param tag - тег
+     * @param value - новое значение
+     * @return Выполнено(true)/Невыполнено(false)
+     */
+    bool updateAttributDouble(std::string tag, double value);
+    /**
+     * @brief Обновление атрибута по его тегу
+     * @param tag - тег
+     * @param value - новое значение
+     * @return Выполнено(true)/Невыполнено(false)
+     */
+    bool updateAttributBool(std::string tag, bool value);
+    /**
+     * @brief Обновление атрибута по его тегу
+     * @param tag - тег
+     * @param value - новое значение
+     * @return Выполнено(true)/Невыполнено(false)
+     */
+    bool updateAttributTime(std::string tag, PTime value);
+    /**
+     * @brief Обновление атрибута по его тегу
+     * @param tag - тег
+     * @param value - новое значение
+     * @return Выполнено(true)/Невыполнено(false)
+     */
+    bool updateAttributDate(std::string tag, PDate value);
+    /**
      * @brief Получение словаря всех тегов листа
      * @return словарь тегов
      */
@@ -168,6 +210,7 @@ public:
 private:
     std::string getValue(std::string tag,bool &s);
     bool setValue(std::string attribut);
+    bool replaceValue(std::string tag,std::string val);
     PhoinFormatObject getListByNumber(int number);
     int getNumberByTagList(std::string tag);
 
