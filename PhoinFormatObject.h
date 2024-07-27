@@ -28,6 +28,15 @@ public:
      */
     std::string getName();
     /**
+     * @brief Установка нового имени
+     * @param id - новое имя
+     */
+    void setName(std::string id);
+    /**
+     * @brief Сгенерировать случайное имя
+     */
+    void generateName();
+    /**
      * @brief Получение целого числа из листа по его тегу
      * @param tag - тег
      * @param result - переменная куда будет записано число

@@ -6,7 +6,6 @@
 PhoinFormatObject::PhoinFormatObject(std::string lineId):line(lineId){}
 
 //========================================================================
-
 PhoinFormatObject::PhoinFormatObject()
 {
     nameID = "Default name";
@@ -15,6 +14,22 @@ PhoinFormatObject::PhoinFormatObject()
 std::string PhoinFormatObject::getName()
 {
     return nameID;
+}
+//========================================================================
+void PhoinFormatObject::setName(std::string id)
+{
+    nameID = id;
+}
+//========================================================================
+void PhoinFormatObject::generateName()
+{
+    srand(time(NULL));
+    int randNumber = rand() % 65511 + 1;
+    std::hash<std::string> hash_code;
+    size_t h = hash_code(std::to_string(randNumber));
+    std::stringstream streamStr;
+    streamStr << h;
+    nameID = streamStr.str();
 }
 //========================================================================
 bool PhoinFormatObject::getValueInt(std::string tag,int &result)
